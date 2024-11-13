@@ -2,6 +2,8 @@ import pygame
 import random
 from var import WHITE, BLACK, WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE
 from grids import Wall,Grid,Cursor
+from player import Player
+
 
 # Initialize Pygame
 pygame.init()
@@ -13,7 +15,8 @@ pygame.display.set_caption("Wall Crusher")
 # Game variables
 grid = Grid(GRID_SIZE, CELL_SIZE)   # Game grid
 cursor = Cursor(1, 1)               # Starting in the center of the grid
-hp = 3
+player = Player()                   # New player
+player.HP = 3
 round_time_limit = 3000  # Timer in milliseconds
 timer = round_time_limit
 clock = pygame.time.Clock()
@@ -40,7 +43,7 @@ while running:
             
             # Punching mechanic
             elif event.key == pygame.K_SPACE: 
-                grid.walls[cursor.y][cursor.x].punch()
+                grid.walls[cursor.y][cursor.x].punch(player)
 
     # Draw the game
     grid.draw(screen, cursor)
@@ -48,22 +51,26 @@ while running:
     # Round
     timer -= clock.get_time()
     if timer <= 0:
-        if grid.is_crushed() != True:  # Check if the wall is crushed
-            hp -= 1
+        if grid.is_crushed() != True:  # Check if the wall isn't crushed
+            player.HP -= 1
+        else:
+            player.WALLS_PASSED += 1
         
         # Generate a new grid and reset timer
         grid.random_walls()
         timer = round_time_limit
+        player.TIME += round_time_limit
 
     # Game Over condition
-    if hp <= 0:
+    if player.HP <= 0:
         print("Game Over!")
+        player.save()
         running = False
 
     # Display HP and timer
     font = pygame.font.SysFont(None, 36)
-    hp_text = font.render(f"HP: {hp}", True, BLACK)
-    timer_text = font.render(f"Time: {max(timer // 1000, 0)}s", True, BLACK)
+    hp_text = font.render(f"HP: {player.HP}", True, WHITE)
+    timer_text = font.render(f"Time: {max(timer // 1000, 0)}s", True, WHITE)
     screen.blit(hp_text, (10, 10))
     screen.blit(timer_text, (WIDTH - 150, 10))
 

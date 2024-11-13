@@ -15,9 +15,18 @@ class Wall:
     def draw(self, screen):
         pygame.draw.rect(screen, WALL_COLOR[self.level + 1], self.rect)
 
-    def punch(self):
+    def punch(self, player):
+        player.NB_OF_PUNCHES += 1
+
         if(self.level >0):
             self.level -= 1
+
+            if(self.level == 0):
+                player.BRICKS_BROKEN += 1
+        
+        else:
+            if(self.level == 0):
+                player.MISS += 1
 
 class Grid:
     size: int
