@@ -1,5 +1,6 @@
+import os
 import csv
-
+import pygame
 class Player:
     ID: int
     NAME: str
@@ -10,15 +11,31 @@ class Player:
     MISS: int
     TIME: int
 
-    global_id = 1
-
     def __init__(self, name = None):
 
-        with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
-            last_id = int(file.readlines()[-1].split(',')[0])
-        
-        global_id = last_id + 1
-        self.ID = global_id
+        if not os.path.exists('data/players.csv'):
+            with open('data/players.csv', 'w', encoding="utf-8", newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(["ID", "NAME", "HP", "NB_OF_PUNCHES", "BRICKS_BROKEN", "WALLS_PASSED", "MISS", "TIME"])
+        try:
+            with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
+                read = file.readlines()
+                print(len(read))
+                if len(read) == 1:
+                    last_id = 0
+                else:
+                    last_id = int(file.readlines()[-1].split(',')[0])
+            
+        except (FileNotFoundError, IOError) as e:
+            print("Error reading the CSV file:", e)
+            pygame.quit()
+            exit()
+        except Exception as e:
+            print("An unexpected error occurred:", e)
+            pygame.quit()
+            exit()
+
+        self.ID = last_id + 1
         self.NAME = name
         self.HP = 3
         self.NB_OF_PUNCHES = 0
@@ -42,7 +59,7 @@ class Player:
         self.WALLS_PASSED = 0
         self.MISS = 0
         self.TIME = 0
-    
+
     def save(self):
         # Writing data to a CSV file
         data =[   
