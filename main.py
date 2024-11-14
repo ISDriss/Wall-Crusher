@@ -1,7 +1,7 @@
 import pygame
 import csv
 import random
-from var import WHITE, BLACK, BLUE, WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE
+from visual import WHITE, BLACK, BLUE, WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE
 from grids import Wall,Grid,Cursor
 from player import Player
 
@@ -15,10 +15,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 # Game variables
 grid = Grid(GRID_SIZE, CELL_SIZE)   # Game grid
 cursor = Cursor(1, 1)               # Starting in the center of the grid
-player = Player()                   # New player
-player.HP = 3
-round_time_limit = 3000  # Timer in milliseconds
-timer = round_time_limit
 clock = pygame.time.Clock()
 
 # Fonts
@@ -66,6 +62,7 @@ def main_menu():
                         levels_menu()
                     elif selected_option == 1:  # Endless
                         menu_running = False
+                        endless_game()
                     elif selected_option == 2:  # Leaderboards
                         show_leaderboards()
                     elif selected_option == 3: # Quit
@@ -128,62 +125,95 @@ def show_leaderboards():
                 if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:  # Return to main menu
                     leaderboard_running = False
 
-# Run the main menu before starting the game loop
-main_menu()
-
-# Main game loop
-running = True
-while running:
-    screen.fill(BLACK)
-
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            # Movement
-            if event.key == pygame.K_LEFT and cursor.x > 0:
-                cursor.x -= 1
-            elif event.key == pygame.K_RIGHT and cursor.x < GRID_SIZE - 1:
-                cursor.x += 1
-            elif event.key == pygame.K_UP and cursor.y > 0:
-                cursor.y -= 1
-            elif event.key == pygame.K_DOWN and cursor.y < GRID_SIZE - 1:
-                cursor.y += 1
-            
-            # Punching mechanic
-            elif event.key == pygame.K_SPACE: 
-                grid.walls[cursor.y][cursor.x].punch(player)
-
-    # Draw the game
-    grid.draw(screen, cursor)
-
-    # Round
-    timer -= clock.get_time()
-    if timer <= 0:
-        if grid.is_crushed() != True:  # Check if the wall isn't crushed
-            player.HP -= 1
-        else:
-            player.WALLS_PASSED += 1
+# Player name input screen
+def get_player_name():
+    input_active = True
+    player_name = ""
+    while input_active:
+        screen.fill(BLACK)
+        prompt_text = menu_font.render("Enter Name:", True, WHITE)
+        name_display = select_font.render(player_name, True, WHITE)
         
-        # Generate a new grid and reset timer
-        grid.random_walls()
-        timer = round_time_limit
-        player.TIME += round_time_limit
+        # Center the text
+        screen.blit(prompt_text, (WIDTH // 2 - prompt_text.get_width() // 2, HEIGHT // 3))
+        screen.blit(name_display, (WIDTH // 2 - name_display.get_width() // 2, HEIGHT // 2))
+        
+        pygame.display.flip()
 
-    # Game Over condition
-    if player.HP <= 0:
-        print("Game Over!")
-        player.save()
-        running = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    if len(player_name) > 0:  # Ensure the name isn't empty
+                        input_active = False  # Confirm input and exit loop
+                elif event.key == pygame.K_BACKSPACE:
+                    player_name = player_name[:-1]  # Remove last character
+                elif len(player_name) < 5 and event.unicode.isprintable():
+                    player_name += event.unicode  # Add typed character
+    return player_name
 
-    # Display HP and timer
-    hp_text = score_font.render(f"HP: {player.HP}", True, BLUE)
-    timer_text = score_font.render(f"Time: {max(timer // 1000, 0)}s", True, BLUE)
-    screen.blit(hp_text, (10, 10))
-    screen.blit(timer_text, (WIDTH - 150, 10))
+# Endless game loop
+def endless_game(): 
+    player = Player()                   # New player
+    round_time_limit = 3000  # Timer in milliseconds
+    timer = round_time_limit
+    running = True
 
-    # Update the display and tick the clock
-    pygame.display.flip()
-    clock.tick(30)
+    player.NAME = get_player_name()
+    while running:
+        screen.fill(BLACK)
 
+        # Event handling
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                # Movement
+                if event.key == pygame.K_LEFT and cursor.x > 0:
+                    cursor.x -= 1
+                elif event.key == pygame.K_RIGHT and cursor.x < GRID_SIZE - 1:
+                    cursor.x += 1
+                elif event.key == pygame.K_UP and cursor.y > 0:
+                    cursor.y -= 1
+                elif event.key == pygame.K_DOWN and cursor.y < GRID_SIZE - 1:
+                    cursor.y += 1
+            
+                # Punching mechanic
+                elif event.key == pygame.K_SPACE: 
+                    grid.walls[cursor.y][cursor.x].punch(player)
+
+        # Draw the game
+        grid.draw(screen, cursor)
+
+        # Round
+        timer -= clock.get_time()
+        if timer <= 0:
+            if grid.is_crushed() != True:  # Check if the wall isn't crushed
+                player.HP -= 1
+            else:
+                player.WALLS_PASSED += 1
+        
+            # Generate a new grid and reset timer
+            grid.random_walls()
+            timer = round_time_limit
+            player.TIME += round_time_limit
+
+        # Game Over condition
+        if player.HP <= 0:
+            print("Game Over!")
+            player.save()
+            running = False
+
+        # Display HP and timer
+        hp_text = score_font.render(f"HP: {player.HP}", True, BLUE)
+        timer_text = score_font.render(f"Time: {max(timer // 1000, 0)}s", True, BLUE)
+        screen.blit(hp_text, (10, 10))
+        screen.blit(timer_text, (WIDTH - 150, 10))
+
+        # Update the display and tick the clock
+        pygame.display.flip()
+        clock.tick(30)
+
+main_menu()

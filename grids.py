@@ -1,6 +1,6 @@
 import pygame
 import random
-from var import WALL_COLOR, WALL_SPRITES, WHITE
+from visual import WALL_COLOR, WALL_SPRITES, WHITE
 
 #a wall is 1 cell of the grid, the wall type determines if the wall is 
 #indestructible (-1), destroyed (0), or destructible (1 to inf)
