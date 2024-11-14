@@ -12,20 +12,16 @@ class Player:
     TIME: int
 
     def __init__(self, name = None):
-
+        last_id = 0
         if not os.path.exists('data/players.csv'):
             with open('data/players.csv', 'w', encoding="utf-8", newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow(["ID", "NAME", "HP", "NB_OF_PUNCHES", "BRICKS_BROKEN", "WALLS_PASSED", "MISS", "TIME"])
+        
         try:
             with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
-                read = file.readlines()
-                print(len(read))
-                if len(read) == 1:
-                    last_id = 0
-                else:
-                    last_id = int(file.readlines()[-1].split(',')[0])
-            
+                last_id = int(file.readlines()[-1].split(',')[0])
+    
         except (FileNotFoundError, IOError) as e:
             print("Error reading the CSV file:", e)
             pygame.quit()
