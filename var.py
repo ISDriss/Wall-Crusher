@@ -26,19 +26,20 @@ WALL_COLOR = (
 )
 
 #wall Sprites
+METAL = pygame.transform.scale( pygame.image.load("sprites/metal.png").convert_alpha(), (CELL_SIZE, CELL_SIZE))
 WALL_SPRITES = (
     (
         pygame.transform.scale( pygame.image.load("sprites/wall1_4.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
-        pygame.transform.scale( pygame.image.load("sprites/wall1_3.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
         pygame.transform.scale( pygame.image.load("sprites/wall1_2.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
         pygame.transform.scale( pygame.image.load("sprites/wall1_1.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
-        pygame.transform.scale( pygame.image.load("sprites/wall1_0.png").convert_alpha(), (CELL_SIZE, CELL_SIZE))
+        pygame.transform.scale( pygame.image.load("sprites/wall1_0.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        METAL
     ),
     (
         pygame.transform.scale( pygame.image.load("sprites/wall2_4.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
-        pygame.transform.scale( pygame.image.load("sprites/wall2_3.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
         pygame.transform.scale( pygame.image.load("sprites/wall2_2.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
         pygame.transform.scale( pygame.image.load("sprites/wall2_1.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
-        pygame.transform.scale( pygame.image.load("sprites/wall2_0.png").convert_alpha(), (CELL_SIZE, CELL_SIZE))
+        pygame.transform.scale( pygame.image.load("sprites/wall2_0.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        METAL
     )
 )

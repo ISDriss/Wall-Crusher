@@ -14,7 +14,6 @@ class Wall:
     
     def draw(self, screen): 
         screen.blit(WALL_SPRITES[0][self.level], self.rect)
-        #pygame.draw.rect(screen, WALL_COLOR[self.level + 1], self.rect)
 
     def punch(self, player):
         player.NB_OF_PUNCHES += 1
