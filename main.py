@@ -1,6 +1,6 @@
 import pygame
 import random
-from var import WHITE, BLACK, WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE
+from var import WHITE, BLACK, BLUE, WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE
 from grids import Wall,Grid,Cursor
 from player import Player
 
@@ -10,7 +10,6 @@ pygame.init()
 
 # Setup the screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Wall Crusher")
 
 # Game variables
 grid = Grid(GRID_SIZE, CELL_SIZE)   # Game grid
@@ -24,7 +23,7 @@ clock = pygame.time.Clock()
 # Main game loop
 running = True
 while running:
-    screen.fill(WHITE)
+    screen.fill(BLACK)
 
     # Event handling
     for event in pygame.event.get():
@@ -69,8 +68,8 @@ while running:
 
     # Display HP and timer
     font = pygame.font.SysFont(None, 36)
-    hp_text = font.render(f"HP: {player.HP}", True, WHITE)
-    timer_text = font.render(f"Time: {max(timer // 1000, 0)}s", True, WHITE)
+    hp_text = font.render(f"HP: {player.HP}", True, BLUE)
+    timer_text = font.render(f"Time: {max(timer // 1000, 0)}s", True, BLUE)
     screen.blit(hp_text, (10, 10))
     screen.blit(timer_text, (WIDTH - 150, 10))
 

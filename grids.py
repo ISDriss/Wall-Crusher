@@ -1,6 +1,6 @@
 import pygame
 import random
-from var import WALL_COLOR, WHITE
+from var import WALL_COLOR, WALL_SPRITES, WHITE
 
 #a wall is 1 cell of the grid, the wall type determines if the wall is 
 #indestructible (-1), destroyed (0), or destructible (1 to inf)
@@ -12,8 +12,9 @@ class Wall:
         self.level = type
         self.rect = rect
     
-    def draw(self, screen):
-        pygame.draw.rect(screen, WALL_COLOR[self.level + 1], self.rect)
+    def draw(self, screen): 
+        screen.blit(WALL_SPRITES[0][self.level], self.rect)
+        #pygame.draw.rect(screen, WALL_COLOR[self.level + 1], self.rect)
 
     def punch(self, player):
         player.NB_OF_PUNCHES += 1

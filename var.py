@@ -1,7 +1,13 @@
+import pygame
+
 # Screen dimensions and settings
 WIDTH, HEIGHT = 600, 600
 GRID_SIZE = 3
 CELL_SIZE = WIDTH // GRID_SIZE
+
+# Setup the screen
+pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Wall Crusher")
 
 # Colors
 WHITE = (255, 255, 255)
@@ -17,4 +23,22 @@ WALL_COLOR = (
     YELLOW,
     BLUE,
     GREEN
+)
+
+#wall Sprites
+WALL_SPRITES = (
+    (
+        pygame.transform.scale( pygame.image.load("sprites/wall1_4.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall1_3.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall1_2.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall1_1.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall1_0.png").convert_alpha(), (CELL_SIZE, CELL_SIZE))
+    ),
+    (
+        pygame.transform.scale( pygame.image.load("sprites/wall2_4.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall2_3.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall2_2.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall2_1.png").convert_alpha(), (CELL_SIZE, CELL_SIZE)),
+        pygame.transform.scale( pygame.image.load("sprites/wall2_0.png").convert_alpha(), (CELL_SIZE, CELL_SIZE))
+    )
 )
