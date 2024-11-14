@@ -154,36 +154,52 @@ def get_player_name():
                     player_name += event.unicode  # Add typed character
     return player_name
 
+# Game Methods
+def game_event(player):
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            # Movement
+            if event.key == pygame.K_LEFT and cursor.x > 0:
+                cursor.x -= 1
+            elif event.key == pygame.K_RIGHT and cursor.x < GRID_SIZE - 1:
+                cursor.x += 1
+            elif event.key == pygame.K_UP and cursor.y > 0:
+                cursor.y -= 1
+            elif event.key == pygame.K_DOWN and cursor.y < GRID_SIZE - 1:
+                cursor.y += 1
+            
+            # Punching mechanic
+            elif event.key == pygame.K_SPACE: 
+                grid.walls[cursor.y][cursor.x].punch(player)
+
+def game_HUD(player, timer):
+    hp_text = score_font.render(f"HP: {player.HP}", True, BLUE)
+    timer_text = score_font.render(f"Time: {max(timer // 1000, 0)}s", True, BLUE)
+    screen.blit(hp_text, (10, 10))
+    screen.blit(timer_text, (WIDTH - 150, 10))  
+
+def game_over(player):
+    if player.HP <= 0:
+        print("Game Over!")
+        player.save()
+        running = False
+
 # Endless game loop
 def endless_game(): 
     player = Player()                   # New player
-    round_time_limit = 3000  # Timer in milliseconds
-    timer = round_time_limit
+    time_limit = 3000  # Timer in milliseconds
+    timer = time_limit
     running = True
 
     player.NAME = get_player_name()
     while running:
         screen.fill(BLACK)
 
-        # Event handling
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN:
-                # Movement
-                if event.key == pygame.K_LEFT and cursor.x > 0:
-                    cursor.x -= 1
-                elif event.key == pygame.K_RIGHT and cursor.x < GRID_SIZE - 1:
-                    cursor.x += 1
-                elif event.key == pygame.K_UP and cursor.y > 0:
-                    cursor.y -= 1
-                elif event.key == pygame.K_DOWN and cursor.y < GRID_SIZE - 1:
-                    cursor.y += 1
-            
-                # Punching mechanic
-                elif event.key == pygame.K_SPACE: 
-                    grid.walls[cursor.y][cursor.x].punch(player)
-
+        game_event(player)
+        
         # Draw the game
         grid.draw(screen, cursor)
 
@@ -197,20 +213,14 @@ def endless_game():
         
             # Generate a new grid and reset timer
             grid.random_walls()
-            timer = round_time_limit
-            player.TIME += round_time_limit
+            timer = time_limit
+            player.TIME += time_limit
 
         # Game Over condition
-        if player.HP <= 0:
-            print("Game Over!")
-            player.save()
-            running = False
+        game_over(player)
 
         # Display HP and timer
-        hp_text = score_font.render(f"HP: {player.HP}", True, BLUE)
-        timer_text = score_font.render(f"Time: {max(timer // 1000, 0)}s", True, BLUE)
-        screen.blit(hp_text, (10, 10))
-        screen.blit(timer_text, (WIDTH - 150, 10))
+        game_HUD(player, timer)
 
         # Update the display and tick the clock
         pygame.display.flip()
