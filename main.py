@@ -60,8 +60,10 @@ def main_menu(): #Main menu
         render_menu("Wall Crusher",menu_options, selected_option)
 
         # Handle events for menu navigation
-        selected_option = controller_navigation(len(menu_options), selected_option)     # microcontroller is only used for the main menu
-
+        try:
+            selected_option = controller_navigation(len(menu_options), selected_option)     # microcontroller is only used for the main menu
+        except:
+            pass
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 menu_running = False
@@ -249,6 +251,7 @@ def game_over(player, running, game_mode, difficulty):
 # Endless game loop
 def endless_game(): 
     player = Player()       # New player
+    grid = Grid()           # New grid
 
     max_time = 3200         # Timer in milliseconds
     time_limit = 3200       

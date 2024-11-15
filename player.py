@@ -16,7 +16,7 @@ class Player:
         if not os.path.exists('data/players.csv'):
             with open('data/players.csv', 'w', encoding="utf-8", newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(["ID", "NAME", "HP", "NB_OF_PUNCHES", "BRICKS_BROKEN", "WALLS_PASSED", "MISS", "TIME", "LEVEL", "DIFFICULTY"])
+                writer.writerow(["ID", "NAME", "NB_OF_PUNCHES", "BRICKS_BROKEN", "WALLS_PASSED", "MISS", "TIME", "LEVEL", "DIFFICULTY"])
         
         try:
             with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
