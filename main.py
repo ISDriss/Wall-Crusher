@@ -97,11 +97,17 @@ def show_leaderboards(): # Leaderboard screen
         leaderboard_text = menu_font.render("Leaderboards", True, WHITE)
         screen.blit(leaderboard_text, (WIDTH // 2 - leaderboard_text.get_width() // 2, HEIGHT // 10))
 
-        # Example placeholder leaderboard content
-        with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
-            readr = csv.reader(file)
-            next(readr)
-            leaderboard_data = sorted([row for row in readr], key=lambda x: int(x[4]), reverse=True)
+        try:
+            with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
+                readr = csv.reader(file)
+                next(readr)
+                leaderboard_data = sorted([row for row in readr], key=lambda x: int(x[4]), reverse=True)
+        except (FileNotFoundError, IOError) as e:
+            print("Error reading the CSV file:", e)
+            leaderboard_data = list()
+        except Exception as e:
+            print("An unexpected error occurred:", e)
+            leaderboard_data = list()
         
         text = leaderboard_font.render(f"Name | Punch | Broken | Walls | Miss | Time | Level", True, WHITE)
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4))
@@ -153,6 +159,7 @@ def show_game_over(player: Player, game_mode, difficulty_level): # Game over scr
     game_over_running = True
     screen.fill(BLACK)
     title = menu_font.render("Game Over", True, WHITE)
+    accuracy = round(player.BRICKS_BROKEN / player.NB_OF_PUNCHES, 2) if player.NB_OF_PUNCHES != 0 else 0
     game_data = [
         f"Game mode      : {game_mode}",
         f"Difficulty     : {difficulty_level}",
@@ -160,15 +167,16 @@ def show_game_over(player: Player, game_mode, difficulty_level): # Game over scr
         f"Bricks broken  : {player.BRICKS_BROKEN}",
         f"Walls passed   : {player.WALLS_PASSED}",
         f"Missed Punches : {player.MISS}",  
-        f"Accuracy       : {player.BRICKS_BROKEN/player.NB_OF_PUNCHES}",
+        f"Accuracy       : {accuracy}%",
         f"Time Survived  : {player.TIME}"
     ]
-    screen.blit(title, (WIDTH // 2 - title.get_width() // 2, HEIGHT // 3))
+    screen.blit(title, (WIDTH // 2 - title.get_width() // 2, HEIGHT // 5))
     
+    offset = 30
     for entry in game_data:
         text = score_font.render(entry, True, WHITE)
-        screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4 + offset))
-        offset += 30
+        screen.blit(text, (WIDTH // 5, HEIGHT // 4 + offset))
+        offset += 40
     pygame.display.flip()
 
     while game_over_running:
