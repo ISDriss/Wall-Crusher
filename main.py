@@ -18,10 +18,10 @@ cursor = Cursor(1, 1)               # Starting in the center of the grid
 clock = pygame.time.Clock()
 
 # Fonts
-menu_font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 72)
-select_font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 42)
-leaderboard_font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 20)
-score_font = pygame.font.SysFont(None, 36)
+menu_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 72)
+select_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 42)
+leaderboard_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 20)
+score_font = pygame.font.Font("assets\Pixelify_Sans\static\PixelifySans-Medium.ttf", 36)
 
 # Menu methods
 def render_menu(title, options, selected):
@@ -37,9 +37,8 @@ def render_menu(title, options, selected):
 def navigate_menu(options, selected):
     return
 
-# Menus
-# Menu function to handle selections
-def main_menu():
+# Menus & Screens
+def main_menu(): #Main menu
     menu_options = ["Levels", "Endless", "Leaderboards", "Quit"]
     selected_option = 0
     menu_running = True
@@ -61,15 +60,13 @@ def main_menu():
                     if selected_option == 0:  # Levels
                         levels_menu()
                     elif selected_option == 1:  # Endless
-                        menu_running = False
                         endless_game()
                     elif selected_option == 2:  # Leaderboards
                         show_leaderboards()
                     elif selected_option == 3: # Quit
                         pygame.quit()
 
-# Levels menu function
-def levels_menu():
+def levels_menu(): # Level select
     level_options = ["Level ONE", "Level TWO", "Level THREE"]
     selected_level = 0
     levels_running = True
@@ -93,8 +90,7 @@ def levels_menu():
                     # Add functionality to load levels or return to the main menu
                     return
 
-# Leaderboards function (placeholder for future implementation)
-def show_leaderboards():
+def show_leaderboards(): # Leaderboard screen
     leaderboard_running = True
     while leaderboard_running:
         screen.fill(BLACK)
@@ -125,8 +121,7 @@ def show_leaderboards():
                 if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:  # Return to main menu
                     leaderboard_running = False
 
-# Player name input screen
-def get_player_name():
+def get_player_name(): # Player name input screen
     input_active = True
     player_name = ""
     while input_active:
@@ -153,6 +148,38 @@ def get_player_name():
                 elif len(player_name) < 5 and event.unicode.isprintable():
                     player_name += event.unicode  # Add typed character
     return player_name
+
+def show_game_over(player: Player, game_mode, difficulty_level): # Game over screen
+    game_over_running = True
+    screen.fill(BLACK)
+    title = menu_font.render("Game Over", True, WHITE)
+    game_data = [
+        f"Game mode      : {game_mode}",
+        f"Difficulty     : {difficulty_level}",
+        f"Total Punches  : {player.NB_OF_PUNCHES}",
+        f"Bricks broken  : {player.BRICKS_BROKEN}",
+        f"Walls passed   : {player.WALLS_PASSED}",
+        f"Missed Punches : {player.MISS}",  
+        f"Accuracy       : {player.BRICKS_BROKEN/player.NB_OF_PUNCHES}",
+        f"Time Survived  : {player.TIME}"
+    ]
+    screen.blit(title, (WIDTH // 2 - title.get_width() // 2, HEIGHT // 3))
+    
+    for entry in game_data:
+        text = score_font.render(entry, True, WHITE)
+        screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4 + offset))
+        offset += 30
+    pygame.display.flip()
+
+    while game_over_running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_over_running = False
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:  # Return to main menu
+                    game_over_running = False
 
 # Game Methods
 def game_event(player):
@@ -181,10 +208,10 @@ def game_HUD(player, timer):
     screen.blit(hp_text, (10, 10))
     screen.blit(timer_text, (WIDTH - 150, 10))  
 
-def game_over(player, running, level):
+def game_over(player, running, game_mode, difficulty):
     if player.HP <= 0:
-        print("Game Over!")
-        player.save(level)
+        player.save(game_mode, difficulty)
+        show_game_over(player, game_mode, difficulty)
         return False
     return True
 
@@ -230,7 +257,7 @@ def endless_game():
             player.TIME += time_limit
 
         # Game Over condition
-        running = game_over(player, running, f"endless {difficulty}")
+        running = game_over(player, running, "endless", difficulty)
 
         # Display HP and timer
         game_HUD(player, timer)
