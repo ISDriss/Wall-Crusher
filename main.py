@@ -41,7 +41,7 @@ try:
 except:
     pass
 
-def controller_navigation(no_options, selected):
+def controller_menu_navigation(no_options, selected):
     if ser and ser.is_open:
         output = ser.readline().decode().strip()        # Read Arduino Serial data, and remove added space
         if output != "":
@@ -61,7 +61,7 @@ def main_menu(): #Main menu
 
         # Handle events for menu navigation
         try:
-            selected_option = controller_navigation(len(menu_options), selected_option)     # microcontroller is only used for the main menu
+            selected_option = controller_menu_navigation(len(menu_options), selected_option)     # microcontroller is only used for the main menu
         except:
             pass
         for event in pygame.event.get():
@@ -251,7 +251,7 @@ def game_over(player, running, game_mode, difficulty):
 # Endless game loop
 def endless_game(): 
     player = Player()       # New player
-    grid = Grid()           # New grid
+    grid.set_walls()        # New grid
 
     max_time = 3200         # Timer in milliseconds
     time_limit = 3200       
