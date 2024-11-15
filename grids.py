@@ -46,22 +46,22 @@ class Grid:
             for row in range(size)
         ]
 
-    #Set a wall based on a template, if a template isn't provided set to a level 0 wall
+    # Set a wall based on a template, if a template isn't provided set to a level 0 wall
     def set_walls(self, temp: list[list[int]] = None):    
         for row in range(self.size):
             for col in range(self.size):
                 self.walls[row][col].level = temp[row][col] if temp else 0
 
-    #TO DO: add difficulty scalar to change the probabilities and slowly add higher level walls
+    # Random walls based on a given difficulty level
     def random_walls(self, difficulty = 1): 
         elements = [-1, 0, 1, 2, 3]
         difficulty_weights = {
-            1 : [0.6, 0.0, 0.4, 0.0, 0.0],
-            2 : [0.4, 0.05, 0.55, 0.0, 0.0],
-            3 : [0.4, 0.1, 0.5, 0.1, 0.0],
-            4 : [0.3, 0.05, 0.5, 0.1, 0.05],
-            5 : [0.3, 0.05, 0.4, 0.15, 0.1],
-            6 : [0.25, 0.05, 0.3, 0.2, 0.2]
+            1 : [0.7, 0.0, 0.3, 0.0, 0.0],
+            2 : [0.6, 0.05, 0.35, 0.0, 0.0],
+            3 : [0.5, 0.1, 0.3, 0.1, 0.0],
+            4 : [0.4, 0.05, 0.4, 0.1, 0.05],
+            5 : [0.4, 0.05, 0.3, 0.15, 0.1],
+            6 : [0.35, 0.05, 0.2, 0.2, 0.2]
         }
 
         for row in self.walls:
