@@ -35,15 +35,20 @@ def render_menu(title, options, selected):
     pygame.display.flip()
 
 # Controller input recuperation
-ser = serial.Serial("COM6", 115200, timeout=0.01)      #I don't have the knowledge nor the time to make an automatic COM detection :/
-ser.write(b"Hello from python\n")
+try:
+    ser = serial.Serial("COM6", 115200, timeout=0.01)      #I don't have the knowledge nor the time to make an automatic COM detection :/
+    ser.write(b"Hello from python\n")
+except:
+    pass
+
 def controller_navigation(no_options, selected):
-    output = ser.readline().decode().strip()        # Read Arduino Serial data, and remove added space
-    if output != "":
-        if output == "UP":
-            selected = (selected - 1) % no_options
-        elif output == "DOWN":
-            selected = (selected + 1) % no_options
+    if ser and ser.is_open:
+        output = ser.readline().decode().strip()        # Read Arduino Serial data, and remove added space
+        if output != "":
+            if output == "UP":
+                selected = (selected - 1) % no_options
+            elif output == "DOWN":
+                selected = (selected + 1) % no_options
     return selected
 
 # Menus & Screens
@@ -55,7 +60,7 @@ def main_menu(): #Main menu
         render_menu("Wall Crusher",menu_options, selected_option)
 
         # Handle events for menu navigation
-        selected_option = controller_navigation(len(menu_options), selected_option)
+        selected_option = controller_navigation(len(menu_options), selected_option)     # microcontroller is only used for the main menu
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -76,6 +81,7 @@ def main_menu(): #Main menu
                         show_leaderboards()
                     elif selected_option == 3: # Quit
                         pygame.quit()
+                        exit()
         clock.tick(60)
 
 def levels_menu(): # Level select
@@ -103,7 +109,6 @@ def levels_menu(): # Level select
                     return
         clock.tick(60)
         
-
 def show_leaderboards(): # Leaderboard screen
     leaderboard_running = True
     while leaderboard_running:
@@ -293,3 +298,5 @@ def endless_game():
         clock.tick(60)
 
 main_menu()
+pygame.quit()
+exit()
