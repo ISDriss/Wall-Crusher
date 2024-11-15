@@ -16,7 +16,7 @@ class Player:
         if not os.path.exists('data/players.csv'):
             with open('data/players.csv', 'w', encoding="utf-8", newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow(["ID", "NAME", "HP", "NB_OF_PUNCHES", "BRICKS_BROKEN", "WALLS_PASSED", "MISS", "TIME", "LEVEL"])
+                writer.writerow(["ID", "NAME", "HP", "NB_OF_PUNCHES", "BRICKS_BROKEN", "WALLS_PASSED", "MISS", "TIME", "LEVEL", "DIFFICULTY"])
         
         try:
             with open('data/players.csv', 'r', encoding="utf-8", newline='') as file:
@@ -60,7 +60,7 @@ class Player:
         self.MISS = 0
         self.TIME = 0
 
-    def save(self, level  = "unknown"):
+    def save(self, level  = "unknown", difficulty = 0):
         # Writing data to a CSV file
         data =[   
             self.ID,
@@ -70,7 +70,8 @@ class Player:
             self.WALLS_PASSED,
             self.MISS,
             self.TIME,
-            level]
+            level,
+            difficulty]
     
         with open('data/players.csv', 'a', encoding="utf-8", newline='') as file:
             writr = csv.writer(file)
