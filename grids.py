@@ -53,11 +53,22 @@ class Grid:
                 self.walls[row][col].level = temp[row][col] if temp else 0
 
     #TO DO: add difficulty scalar to change the probabilities and slowly add higher level walls
-    def random_walls(self): 
+    def random_walls(self, difficulty = 1): 
+        elements = [-1, 0, 1, 2, 3]
+        difficulty_weights = {
+            1 : [0.6, 0.0, 0.4, 0.0, 0.0],
+            2 : [0.4, 0.05, 0.55, 0.0, 0.0],
+            3 : [0.4, 0.1, 0.5, 0.1, 0.0],
+            4 : [0.3, 0.05, 0.5, 0.1, 0.05],
+            5 : [0.3, 0.05, 0.4, 0.15, 0.1],
+            6 : [0.25, 0.05, 0.3, 0.2, 0.2]
+        }
+
         for row in self.walls:
             for wall in row:
-                wall.level = random.choice([-1, 0, 1])  # Change the level to a new value
-    
+                wall.level = random.choices(elements, weights=difficulty_weights[difficulty], k=1)[0]
+
+
     # Draw the grid
     def draw(self, screen, cursor):
         for row in self.walls:

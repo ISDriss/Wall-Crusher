@@ -20,7 +20,7 @@ clock = pygame.time.Clock()
 # Fonts
 menu_font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 72)
 select_font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 42)
-font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 24)
+leaderboard_font = pygame.font.Font("pixelmax\Pixelmax-Regular.otf", 20)
 score_font = pygame.font.SysFont(None, 36)
 
 # Menu methods
@@ -107,11 +107,11 @@ def show_leaderboards():
             next(readr)
             leaderboard_data = sorted([row for row in readr], key=lambda x: int(x[4]), reverse=True)
         
-        text = font.render(f"Name | Punch | Broken | Walls | Miss", True, WHITE)
+        text = leaderboard_font.render(f"Name | Punch | Broken | Walls | Miss | Time | Level", True, WHITE)
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4))
         offset = 30
         for entry in leaderboard_data[:10]:
-            text = score_font.render(f"{entry[1]}: {entry[2]},  {entry[3]},  {entry[4]},  {entry[5]}", True, WHITE)
+            text = score_font.render(f"{entry[1]}: {entry[2]},  {entry[3]},  {entry[4]},  {entry[5]}, {entry[6]}, {entry[7]}", True, WHITE)
             screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4 + offset))
             offset += 30
         pygame.display.flip()
@@ -181,18 +181,25 @@ def game_HUD(player, timer):
     screen.blit(hp_text, (10, 10))
     screen.blit(timer_text, (WIDTH - 150, 10))  
 
-def game_over(player):
+def game_over(player, running, level):
     if player.HP <= 0:
         print("Game Over!")
-        player.save()
-        running = False
+        player.save(level)
+        return False
+    return True
 
 # Endless game loop
 def endless_game(): 
-    player = Player()                   # New player
-    time_limit = 3000  # Timer in milliseconds
+    player = Player()       # New player
+
+    max_time = 3200         # Timer in milliseconds
+    time_limit = 3200       
     timer = time_limit
-    running = True
+
+    difficulty = 1          # Difficulty
+    next_level = 5
+
+    running = True          # End condition
 
     player.NAME = get_player_name()
     while running:
@@ -209,15 +216,21 @@ def endless_game():
             if grid.is_crushed() != True:  # Check if the wall isn't crushed
                 player.HP -= 1
             else:
+                time_limit -= 200          # For every wall passed, time limit is decreased
                 player.WALLS_PASSED += 1
+
+                if(player.WALLS_PASSED % next_level == 0):  # For every N walls passed 
+                    time_limit = max_time                   # time limit is reset to max
+                    if difficulty < 6:
+                        difficulty += 1                     # difficulty increases, capped at 6
         
             # Generate a new grid and reset timer
-            grid.random_walls()
+            grid.random_walls(difficulty)
             timer = time_limit
             player.TIME += time_limit
 
         # Game Over condition
-        game_over(player)
+        running = game_over(player, running, f"endless {difficulty}")
 
         # Display HP and timer
         game_HUD(player, timer)
