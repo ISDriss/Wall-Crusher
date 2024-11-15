@@ -1,2 +1,12 @@
-ID,NAME,HP,NB_OF_PUNCHES,BRICKS_BROKEN,WALLS_PASSED,MISS,TIME,LEVEL
-1,test,0,0,1,0,12000,endless 1
+ID,NAME,HP,NB_OF_PUNCHES,BRICKS_BROKEN,WALLS_PASSED,MISS,TIME,LEVEL,DIFFICULTY
+1,test,82,61,17,5,57000,endless,4
+2,Aure,44,35,11,5,39000,endless,3
+3,test,64,55,13,0,44200,endless,3
+4,test,44,36,8,1,30600,endless,2
+5,test,0,0,1,0,12000,endless,1
+6,test,0,0,2,0,14400,endless,1
+7,test,0,0,1,0,12000,endless,1
+8,test,15,13,5,0,23000,endless,2
+9,yes,23,22,7,0,28200,endless,2
+10,ok,111,72,20,20,65200,endless,5
+11,test,3,3,1,0,12000,endless,1

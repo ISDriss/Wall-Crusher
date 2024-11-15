@@ -1,6 +1,6 @@
 import pygame
 import csv
-import random
+import serial
 from visual import WHITE, BLACK, BLUE, WIDTH, HEIGHT, GRID_SIZE, CELL_SIZE
 from grids import Wall,Grid,Cursor
 from player import Player
@@ -34,8 +34,17 @@ def render_menu(title, options, selected):
         screen.blit(option_text, (WIDTH // 2 - option_text.get_width() // 2, HEIGHT // 3 + i * 50))
     pygame.display.flip()
 
-def navigate_menu(options, selected):
-    return
+# Controller input recuperation
+ser = serial.Serial("COM6", 115200, timeout=0.01)      #I don't have the knowledge nor the time to make an automatic COM detection :/
+ser.write(b"Hello from python\n")
+def controller_navigation(no_options, selected):
+    output = ser.readline().decode().strip()        # Read Arduino Serial data, and remove added space
+    if output != "":
+        if output == "UP":
+            selected = (selected - 1) % no_options
+        elif output == "DOWN":
+            selected = (selected + 1) % no_options
+    return selected
 
 # Menus & Screens
 def main_menu(): #Main menu
@@ -46,6 +55,8 @@ def main_menu(): #Main menu
         render_menu("Wall Crusher",menu_options, selected_option)
 
         # Handle events for menu navigation
+        selected_option = controller_navigation(len(menu_options), selected_option)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 menu_running = False
@@ -65,9 +76,10 @@ def main_menu(): #Main menu
                         show_leaderboards()
                     elif selected_option == 3: # Quit
                         pygame.quit()
+        clock.tick(60)
 
 def levels_menu(): # Level select
-    level_options = ["Level ONE", "Level TWO", "Level THREE"]
+    level_options = ["Comming", "Soon"]
     selected_level = 0
     levels_running = True
     while levels_running:
@@ -89,6 +101,8 @@ def levels_menu(): # Level select
                 elif event.key == pygame.K_RETURN:
                     # Add functionality to load levels or return to the main menu
                     return
+        clock.tick(60)
+        
 
 def show_leaderboards(): # Leaderboard screen
     leaderboard_running = True
@@ -126,6 +140,7 @@ def show_leaderboards(): # Leaderboard screen
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:  # Return to main menu
                     leaderboard_running = False
+        clock.tick(60)
 
 def get_player_name(): # Player name input screen
     input_active = True
@@ -153,6 +168,8 @@ def get_player_name(): # Player name input screen
                     player_name = player_name[:-1]  # Remove last character
                 elif len(player_name) < 5 and event.unicode.isprintable():
                     player_name += event.unicode  # Add typed character
+        clock.tick(60)
+    
     return player_name
 
 def show_game_over(player: Player, game_mode, difficulty_level): # Game over screen
@@ -188,6 +205,7 @@ def show_game_over(player: Player, game_mode, difficulty_level): # Game over scr
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN or event.key == pygame.K_ESCAPE:  # Return to main menu
                     game_over_running = False
+        clock.tick(60)
 
 # Game Methods
 def game_event(player):
@@ -272,6 +290,6 @@ def endless_game():
 
         # Update the display and tick the clock
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(60)
 
 main_menu()
