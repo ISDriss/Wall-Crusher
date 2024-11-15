@@ -20,8 +20,8 @@ clock = pygame.time.Clock()
 # Fonts
 menu_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 72)
 select_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 42)
-leaderboard_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 20)
-score_font = pygame.font.Font("assets\Pixelify_Sans\static\PixelifySans-Medium.ttf", 36)
+leaderboard_font = pygame.font.Font("assets\pixelmax\Pixelmax-Regular.otf", 18)
+score_font = pygame.font.Font("assets\Pixelify_Sans\static\PixelifySans-Medium.ttf", 30)
 
 # Menu methods
 def render_menu(title, options, selected):
@@ -109,11 +109,11 @@ def show_leaderboards(): # Leaderboard screen
             print("An unexpected error occurred:", e)
             leaderboard_data = list()
         
-        text = leaderboard_font.render(f"Name | Punch | Broken | Walls | Miss | Time | Level", True, WHITE)
+        text = leaderboard_font.render(f"Name | Punch | Broken | Walls | Miss | Time | Level | Difficulty", True, WHITE)
         screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4))
         offset = 30
         for entry in leaderboard_data[:10]:
-            text = score_font.render(f"{entry[1]}: {entry[2]},  {entry[3]},  {entry[4]},  {entry[5]}, {entry[6]}, {entry[7]}", True, WHITE)
+            text = score_font.render(f"{entry[1]}: {entry[2]},  {entry[3]},  {entry[4]},  {entry[5]}, {entry[6]}, {entry[7]}, {entry[8]}", True, WHITE)
             screen.blit(text, (WIDTH // 2 - text.get_width() // 2, HEIGHT // 4 + offset))
             offset += 30
         pygame.display.flip()
@@ -159,7 +159,7 @@ def show_game_over(player: Player, game_mode, difficulty_level): # Game over scr
     game_over_running = True
     screen.fill(BLACK)
     title = menu_font.render("Game Over", True, WHITE)
-    accuracy = round(player.BRICKS_BROKEN / player.NB_OF_PUNCHES, 2) if player.NB_OF_PUNCHES != 0 else 0
+    accuracy = round((player.BRICKS_BROKEN / player.NB_OF_PUNCHES)*100, 2) if player.NB_OF_PUNCHES != 0 else 0
     game_data = [
         f"Game mode      : {game_mode}",
         f"Difficulty     : {difficulty_level}",
